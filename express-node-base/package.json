@@ -1,0 +1,28 @@
+{
+  "name": "project-express",
+  "version": "1.0.0",
+  "description": "Base express",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon src/app.js",
+    "build": "babel src -d dist"
+  },
+  "keywords": [],
+  "author": "꧁•⊹٭MƦ₡UŦØ٭⊹•꧂",
+  "license": "ISC",
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.4.5",
+    "dotenv-safe": "^9.1.0",
+    "esm": "^3.2.25",
+    "express": "^4.19.2",
+    "joi": "^17.13.1",
+    "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
+    "nodemon": "^3.1.0",
+    "pg": "^8.11.5",
+    "sequelize": "^6.37.3",
+    "uuid": "^9.0.1"
+  }
+}
