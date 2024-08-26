@@ -4,13 +4,13 @@ const CoursesModel = require("../models/coursesModel");
 const ScoresModel = require("../models/scoresModel");
 const sequelize = require("../configs/connections/postgresql");
 
-ClassesModel.hasMany(StudentsModel, { as: "students", foreignKey: "malop" });
+ClassesModel.hasMany(StudentsModel, { as: "students", foreignKey: "malop" }); 
 StudentsModel.belongsTo(ClassesModel, { as: "classes", foreignKey: "malop" });
 StudentsModel.hasMany(ScoresModel, { as: "scores", foreignKey: "masv", targetKey: "masv" });
 ScoresModel.belongsTo(CoursesModel, { as: "courses", foreignKey: "mamonhoc", targetKey: "mamonhoc" });
 class ClassesRepository {
   static getClassesRaw(id) {
-    const query = `
+    const query = `c  
       SELECT classes.*, (
         SELECT json_agg(row_to_json(sv.*)::jsonb || jsonb_build_object('scores', (
             SELECT json_agg(row_to_json(sv.*)::jsonb || jsonb_build_object('courses', row_to_json(mh.*)::jsonb))
