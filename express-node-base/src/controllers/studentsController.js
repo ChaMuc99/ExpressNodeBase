@@ -1,49 +1,68 @@
-const StudentsService = require('../services/studentsService')
+const StudentsService = require('../services/StudentsService');
 
 const StudentsController = {
-    async createStudent(req, res, next) {
+    async createStudent(req,res,next){
+
         try {
-            return res.json({
-                data: await StudentsService.createStudent(req.body),
-                status: 'success',
-                statusCode: 200,
-            });
-        } catch (err) {
-            res.status(400).send({
-                error: err.message || err,
-                status: 'error',
-                statusCode: 400,
-            });
+            const studentData = req.body;
+            const user = req.user;
+
+            const student = await StudentsService.createStudent(studentData,user);
+            res.status(201).json({ data: student, status: 'success'});
+        
+        }   catch (err){
+            res.status(400).json({ error: err.message, status: 'error'});
         }
     },
-    async loginStudent(req, res, next) {
-        try {
-            // Kiểm tra thông tin đăng nhập
-            const { username, password } = req.body;
-    
-            // Kiểm tra username và password (ví dụ: kiểm tra trong cơ sở dữ liệu)
-            if (username === 'admin' && password === 'password') {
-                return res.json({
-                    data: await StudentsService.login({username}),
-                    status: 'success',
-                    statusCode: 200,
-                });
-            } else {
-                // Đăng nhập không thành công
-                res.status(401).json({
-                    error: 'Invalid credentials',
-                    status: 'error',
-                    statusCode: 400,
-                });
-            }
-        } catch (err) {
-            res.status(400).send({
-                error: err.message || err,
-                status: 'error',
-                statusCode: 400,
-            });
+
+    async deleteStudent(req, res, next) {
+        try{
+            const {id} = req.params;
+            const user = req.user;
+
+            await StudentsService.deleteStudent(id, user);
+            res.status(200).json({ status: 'success'});
+
+        }   catch (err) {
+            res.status(400).json({ error: err.message, status: 'error'});
         }
     },
+
+    async updateStudent(req, res, next) {
+        try {
+            const { id } = req.params;
+            const studentData = req.body;
+            const user = req.user;
+            
+            const student = await StudentsService.createStudent(id, studentData, user);
+            res.status(201).json({data: student, status: 'success' });
+            
+        }   catch (err) {
+            res.status(400).json({ error: err.message, status: 'error'});
+        }
+    },
+
+    async searchStudents(req, res, next) {
+        try {
+            const criteria = req.query;
+            const students = await StudentsService.searchStudent(criteria);
+
+            res.status(200).json({ data: students, status: 'success'});
+
+        }   catch (err){
+            res.status(400).json({error: err.message, status: 'error'});
+        }
+    },
+
+    async getAllStudents(req, res, next) {
+        try {
+            const students = await StudentsService.getAllStudents();
+            res.status(200).json({ data: students, status: 'success'});
+        }   catch (err){
+            res.status(400).json({ error: err.message, status 'error'});
+        }
+    }
+   
 };
 
 module.exports = StudentsController;

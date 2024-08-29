@@ -1,19 +1,14 @@
 const express = require('express');
-const routers = express.Router();
-const classesController = require('../controllers/classesController');
-const StudentsController = require('../controllers/studentsController');
-const authenticate = require('../middleware/Authentication')
+const router = express.Router();
+const StudentsController = require('../controllers/StudentsController');
+const authenticate = require('../middleware/Authentication');
+const roleAuthorization = require('../middleware/RoleAuthorization');
 
+// Only teachers and admins can create, delete, update, and access students
+router.post('/student', authenticate, roleAuthorization(['teacher', 'admin']), StudentsController.createStudent);
+router.delete('/student/:id', authenticate, roleAuthorization(['teacher', 'admin']), StudentsController.deleteStudent);
+router.put('/student/:id', authenticate, roleAuthorization(['teacher', 'admin']), StudentsController.updateStudent);
+router.get('/student', authenticate, roleAuthorization(['teacher', 'admin']), StudentsController.searchStudents);
+router.get('/students', authenticate, roleAuthorization(['teacher', 'admin']), StudentsController.getAllStudents);
 
-routers.get('/test', function (req, res) {
-    res.json({message: 'Hello World !!!'});
-});
-
-// Tag
-routers.post('/login', StudentsController.loginStudent)
-routers.post('/student', authenticate, StudentsController.createStudent)
-routers.post('/class', authenticate, classesController.createClass)
-routers.get('/class', authenticate, classesController.getClasses)
-routers.get('/class/raw', authenticate, classesController.getClassesRaw)
-
-exports = module.exports = routers;
+module.exports = router;
