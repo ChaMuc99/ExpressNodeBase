@@ -1,37 +1,33 @@
-const StudentsModel = require('../models/studentModel');
-const sequelize = require('../configs/connections/postgresql');
+const Student = require('../models/Student');
+const sequelize = require('../config/database');
 
 class StudentsRepository {
-  static async create(data, transaction) {
-    return await StudentsModel.create(data, { transaction, returning: true });
+    static create(data, transaction) {
+        return Student.create(data, { transaction, returning: true });
+    }
 
-  }
+    static delete(student_id, transaction) {
+        return Student.destroy({
+            where: { student_id },
+            transaction,
+        });
+    }
 
-  static async delete(studentId, transaction){
-    return await StudentsModel.destroy({
-      where: {id: studentId},
-      transaction,
-      returning: true
-    });
-  }
+    static update(student_id, data, transaction) {
+        return Student.update(data, {
+            where: { student_id },
+            transaction,
+            returning: true,
+        });
+    }
 
-  static async update(studentId, data, transaction){
-    return await StudentsModel.update(data, {
-      where: {id: studentId},
-      transaction,
-      returning: true,
-    });
-  }
+    static search(student_id) {
+        return Student.findByPk(student_id);
+    }
 
-  static async search(criteria) {
-    return await StudentsModel.findAll({
-        where: criteria,
-    });
-  }
-
-  static async getAll(){
-    return await StudentsModel.findAll();
-  }
+    static getAll() {
+        return Student.findAll();
+    }
 }
 
 module.exports = StudentsRepository;
