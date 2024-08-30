@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const sequelize = require('../configs/connections/postgresql');
 
 const CourseRegistration = sequelize.define('CourseRegistration', {
     registration_id: {

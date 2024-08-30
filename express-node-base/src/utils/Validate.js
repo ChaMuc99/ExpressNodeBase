@@ -68,4 +68,8 @@ function isValidCourse(data) {
 }
 module.exports = {
     isValidStudent,
+    isValidTeacher,
+    isValidGrade,
+    isValidCourse,
+    isValidCourseRegistration
 };

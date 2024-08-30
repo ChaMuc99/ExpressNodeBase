@@ -1,4 +1,4 @@
-const StudentsService = require('../services/StudentsService');
+const StudentsService = require('../services/StudentService');
 const { isValidStudent } = require('../utils/Validate');
 
 const StudentController = {
@@ -19,6 +19,24 @@ const StudentController = {
                 data: student,
                 status: 'success',
                 statusCode: 201,
+            });
+        } catch (err) {
+            res.status(400).send({
+                error: err.message || err,
+                status: 'error',
+                statusCode: 400,
+            });
+        }
+    },
+    async loginStudent(req, res, next) {
+        try {
+            const { student_id, password } = req.body;
+            // Assuming you validate the student_id and password
+            const token = await StudentsService.login({ student_id, password });
+            return res.json({
+                token,
+                status: 'success',
+                statusCode: 200,
             });
         } catch (err) {
             res.status(400).send({

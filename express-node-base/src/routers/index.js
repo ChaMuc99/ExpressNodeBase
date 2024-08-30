@@ -1,46 +1,54 @@
 const express = require('express');
-const router = express.Router();
-
-// Import controllers
+const routers = express.Router();
 const StudentController = require('../controllers/StudentController');
-const ClassController = require('../controllers/ClassController');
 const CourseController = require('../controllers/CourseController');
+const GradeController = require('../controllers/GradeController');
+const TeacherController = require('../controllers/TeacherController');
 const CourseRegistrationController = require('../controllers/CourseRegistrationController');
-
-// Import middleware
 const authenticate = require('../middleware/Authentication');
 
-// Public routes
-router.get('/test', (req, res) => {
+// Test route
+routers.get('/test', (req, res) => {
     res.json({ message: 'Hello World !!!' });
 });
 
-// Authentication routes
-router.post('/login', StudentController.loginStudent);
-
 // Student routes
-router.post('/student', authenticate, StudentController.createStudent);
-router.put('/student/:id', authenticate, StudentController.updateStudent);
-router.delete('/student/:id', authenticate, StudentController.deleteStudent);
-router.get('/students', authenticate, StudentController.getAllStudents);
-router.get('/student/:id', authenticate, StudentController.getStudentById);
+routers.post('/login', StudentController.loginStudent);
 
-// Class routes
-router.post('/class', authenticate, ClassController.createClass);
-router.get('/class', authenticate, ClassController.getClasses);
-router.get('/class/raw', authenticate, ClassController.getClassesRaw);
+routers.post('/student', authenticate, StudentController.createStudent);
+routers.put('/student/:id', authenticate, StudentController.updateStudent);
+routers.delete('/student/:id', authenticate, StudentController.deleteStudent);
+routers.get('/student/:id', authenticate, StudentController.getStudent);
+routers.get('/students', authenticate, StudentController.getAllStudents);
 
 // Course routes
-router.post('/course', authenticate, CourseController.createCourse);
-router.get('/course/:id', authenticate, CourseController.getCourseById);
-router.get('/courses', authenticate, CourseController.getAllCourses);
-router.put('/course/:id', authenticate, CourseController.updateCourse);
-router.delete('/course/:id', authenticate, CourseController.deleteCourse);
+routers.post('/course', authenticate, CourseController.createCourse);
+routers.put('/course/:id', authenticate, CourseController.updateCourse);
+routers.delete('/course/:id', authenticate, CourseController.deleteCourse);
+routers.get('/course/:id', authenticate, CourseController.getCourseById);
+routers.get('/courses', authenticate, CourseController.getAllCourses);
 
-// Course registration routes
-router.post('/register-course', authenticate, CourseRegistrationController.registerCourse);
-router.post('/cancel-registration', authenticate, CourseRegistrationController.cancelRegistration);
-router.get('/available-courses', authenticate, CourseRegistrationController.getAvailableCourses);
-router.get('/registered-courses', authenticate, CourseRegistrationController.viewRegisteredCourses);
+// Teacher routes
+routers.post('/login/teacher', TeacherController.loginTeacher); 
 
-module.exports = router;
+routers.post('/teacher', authenticate, TeacherController.createTeacher);
+routers.put('/teacher/:id', authenticate, TeacherController.updateTeacher);
+routers.delete('/teacher/:id', authenticate, TeacherController.deleteTeacher);
+routers.get('/teacher/:id', authenticate, TeacherController.getTeacher);
+routers.get('/teachers', authenticate, TeacherController.getAllTeachers);
+
+// Grade routes
+routers.post('/grade', authenticate, GradeController.createGrade);
+routers.put('/grade/:id', authenticate, GradeController.updateGrade);
+routers.delete('/grade/:id', authenticate, GradeController.deleteGrade);
+routers.get('/grade/:id', authenticate, GradeController.getGradeById);
+routers.get('/grades', authenticate, GradeController.getAllGrades);
+routers.get('/grades/semester/:semester', authenticate, GradeController.getGradesBySemester);
+
+// Course Registration routes
+routers.post('/course-registration', authenticate, CourseRegistrationController.registerCourse);
+routers.delete('/course-registration/:registrationId', authenticate, CourseRegistrationController.cancelRegistration);
+routers.get('/available-courses/:studentId', authenticate, CourseRegistrationController.getAvailableCourses);
+routers.get('/registered-courses/:studentId', authenticate, CourseRegistrationController.viewRegisteredCourses);
+
+module.exports = routers;

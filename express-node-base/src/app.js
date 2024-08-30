@@ -1,9 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { handleError } = require('./middleware/ErrorHandler'); // Import your custom error handler if you have one
-const routes = require('./routes'); // Import routes
-const sequelize = require('./config/database'); // Import Sequelize configuration
+
+const routes = require('./routers'); // Import routes
+
+const sequelize = require('./configs/connections/postgresql');
 
 const app = express();
 
@@ -20,8 +21,6 @@ sequelize.sync()
 // Use routes
 app.use('/api', routes);
 
-// Error handling middleware
-app.use(handleError);
 
 // Health check route
 app.get('/health', (req, res) => {

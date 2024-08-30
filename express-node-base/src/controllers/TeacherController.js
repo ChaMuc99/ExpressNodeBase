@@ -1,7 +1,25 @@
-const TeachersService = require('../services/TeachersService');
-const { isValidTeacher } = require('../utils/Validate');
+const TeacherService = require('../services/TeacherService');
+const jwt = require('jsonwebtoken');
+const { JWT_SECRET } = require('../configs/config');
 
 const TeacherController = {
+    
+    async loginTeacher(req, res) {
+        try {
+            const { email, password } = req.body;
+            const teacher = await TeacherService.authenticateTeacher(email, password);
+
+            if (!teacher) {
+                return res.status(401).json({ message: 'Invalid credentials' });
+            }
+
+            const token = jwt.sign({ id: teacher.id, role: 'teacher' }, JWT_SECRET, { expiresIn: '1h' });
+            res.json({ token });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    },
+
     async createTeacher(req, res, next) {
         try {
             const { value: data, error } = isValidTeacher(req.body);

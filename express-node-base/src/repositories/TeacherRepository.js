@@ -1,5 +1,5 @@
 const Teacher = require('../models/Teacher');
-const sequelize = require('../config/database');
+const sequelize = require('../configs/connections/postgresql');
 
 class TeachersRepository {
     static create(data, transaction) {

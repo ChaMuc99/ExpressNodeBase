@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const sequelize = require('../configs/connections/postgresql');
 
 const Grade = sequelize.define('Grade', {
     grade_id: {

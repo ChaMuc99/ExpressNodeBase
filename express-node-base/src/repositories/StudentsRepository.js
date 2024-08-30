@@ -1,5 +1,5 @@
 const Student = require('../models/Student');
-const sequelize = require('../config/database');
+const sequelize = require('../configs/connections/postgresql');
 
 class StudentsRepository {
     static create(data, transaction) {

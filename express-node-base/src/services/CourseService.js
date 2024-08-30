@@ -1,4 +1,4 @@
-const CoursesRepository = require('../repositories/CoursesRepository');
+const CoursesRepository = require('../repositories/CourseRepository');
 
 const CoursesService = {
   async createCourse(data) {

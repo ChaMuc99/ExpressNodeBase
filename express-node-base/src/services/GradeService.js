@@ -1,5 +1,5 @@
 const GradeRepository = require("../repositories/GradeRepository");
-const { isValidGrade } = require('../utils/Validation');
+const { isValidGrade } = require('../utils/Validate');
 const { isTeacher } = require('../utils/Authorization');
 
 const GradeService = {

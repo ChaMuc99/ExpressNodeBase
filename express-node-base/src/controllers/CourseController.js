@@ -1,4 +1,4 @@
-const CoursesService = require('../services/CoursesService');
+const CoursesService = require('../services/CourseService');
 const { isValidCourse } = require('../utils/Validate');
 
 const CourseController = {
