@@ -1,40 +1,16 @@
-const appConfig = require('../configs/config')
 const jwt = require('jsonwebtoken');
-const _ = require('lodash');
+const { JWT_SECRET } = require('../configs/config');
 
-const authenticate = (req, res, next) => {
-  // Lấy token từ header hoặc query parameter hoặc từ nơi khác
-    const authHeader = req.headers.authorization;
-    const token = authHeader ? _.last(authHeader.split(" ")) : '';
+module.exports = (req, res, next) => {
+    const token = req.headers.authorization?.split(' ')[1];
 
-  // Kiểm tra xem token có tồn tại và hợp lệ không
-  if (token) {
+    if (!token) return res.status(401).json({ message: 'Authorization token missing' });
+
     try {
-      // Xác thực token và lấy dữ liệu từ trong token
-      const decoded = jwt.verify(token, appConfig.SECRET_KEY);
-
-      // Gắn dữ liệu từ token vào request để sử dụng trong các route sau này
-      req.user = decoded;
-
-      // Cho phép request đi tiếp
-      next();
-    } catch (err) {
-      // Token không hợp lệ
-      res.status(401).json({
-        error: "Invalid token",
-        status: "error",
-        statusCode: 401,
-      });
+        const decoded = jwt.verify(token, JWT_SECRET);
+        req.user = decoded;
+        next();
+    } catch (error) {
+        return res.status(401).json({ message: 'Invalid or expired token' });
     }
-  } else {
-    // Token không tồn tại
-    res.status(401).json({
-      error: "Unauthorized",
-      status: "error",
-      statusCode: 401,
-    });
-  }
 };
-
-// Xuất middleware để có thể sử dụng ở nơi khác
-module.exports = authenticate;

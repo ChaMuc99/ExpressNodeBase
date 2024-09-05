@@ -31,11 +31,11 @@ routers.get('/courses', authenticate, CourseController.getAllCourses);
 // Teacher routes
 routers.post('/login/teacher', TeacherController.loginTeacher); 
 
-routers.post('/teacher', authenticate, TeacherController.createTeacher);
-routers.put('/teacher/:id', authenticate, TeacherController.updateTeacher);
-routers.delete('/teacher/:id', authenticate, TeacherController.deleteTeacher);
-routers.get('/teacher/:id', authenticate, TeacherController.getTeacher);
-routers.get('/teachers', authenticate, TeacherController.getAllTeachers);
+routers.post('/teacher',TeacherController.createTeacher);
+routers.put('/teacher/:id', TeacherController.updateTeacher);
+routers.delete('/teacher/:id',TeacherController.deleteTeacher);
+routers.get('/teacher/:id',TeacherController.getTeacher);
+routers.get('/teachers',TeacherController.getAllTeachers);
 
 // Grade routes
 routers.post('/grade', authenticate, GradeController.createGrade);

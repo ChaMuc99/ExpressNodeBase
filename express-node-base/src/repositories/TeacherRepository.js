@@ -2,6 +2,12 @@ const Teacher = require('../models/Teacher');
 const sequelize = require('../configs/connections/postgresql');
 
 class TeachersRepository {
+
+    async getTeacherByEmail(email) {
+        return await Teacher.findOne({ where: { email } });
+    }
+
+
     static create(data, transaction) {
         return Teacher.create(data, { transaction, returning: true });
     }

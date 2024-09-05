@@ -1,4 +1,4 @@
-const TeacherService = require('../services/TeacherService');
+const TeachersService = require('../services/TeacherService');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../configs/config');
 
@@ -7,16 +7,10 @@ const TeacherController = {
     async loginTeacher(req, res) {
         try {
             const { email, password } = req.body;
-            const teacher = await TeacherService.authenticateTeacher(email, password);
-
-            if (!teacher) {
-                return res.status(401).json({ message: 'Invalid credentials' });
-            }
-
-            const token = jwt.sign({ id: teacher.id, role: 'teacher' }, JWT_SECRET, { expiresIn: '1h' });
-            res.json({ token });
+            const result = await TeachersService.authenticateTeacher(email, password);
+            res.json(result);
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            res.status(400).json({ message: error.message });
         }
     },
 

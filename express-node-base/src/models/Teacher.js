@@ -31,6 +31,10 @@ const Teacher = sequelize.define('Teacher', {
         type: DataTypes.STRING(45),
         allowNull: false
     },
+    teacher_password: {
+        type: DataTypes.STRING(255),
+        allowNull: false
+    },
     teacher_department: {
         type: DataTypes.STRING(80),
         allowNull: false
