@@ -6,7 +6,7 @@ const CourseRegistration = sequelize.define('CourseRegistration', {
         type: DataTypes.STRING(45),
         primaryKey: true,
         allowNull: false,
-        defaultValue: sequelize.literal("nextval('course_registration_registration_id_seq'::regclass)")
+        
     },
     student_id: {
         type: DataTypes.STRING(45),
