@@ -1,14 +1,16 @@
 const TeachersService = require('../services/TeacherService');
-const { isValidTeacher } = require('../utils/Validate'); 
+const { isValidTeacher } = require('../utils/Validate');
 
 const TeacherController = {
     async createTeacher(req, res) {
         try {
+            // Validate teacher data
             const { value: data, error } = isValidTeacher(req.body);
             if (error) {
                 return res.status(400).json({ error: error.message || error });
             }
 
+            // Create teacher
             const teacher = await TeachersService.createTeacher(data);
             return res.status(201).json({
                 data: teacher,

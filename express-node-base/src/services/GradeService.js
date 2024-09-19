@@ -1,10 +1,10 @@
 const GradeRepository = require("../repositories/GradeRepository");
 const { isValidGrade } = require('../utils/Validate');
-const { isTeacher } = require('../utils/Authorization');
+const { isTeacher } = require('../utils/Authorization');  // Updated path
 
 const GradeService = {
     async createGrade(data, user) {
-        if (!isTeacher(user)) throw new Error("Unauthorized");
+        if (!user || !isTeacher(user)) throw new Error("Unauthorized");
 
         const { error } = isValidGrade(data);
         if (error) throw new Error(error.message);
@@ -13,7 +13,7 @@ const GradeService = {
     },
 
     async updateGrade(id, data, user) {
-        if (!isTeacher(user)) throw new Error("Unauthorized");
+        if (!user || !isTeacher(user)) throw new Error("Unauthorized");
 
         const { error } = isValidGrade(data);
         if (error) throw new Error(error.message);
@@ -22,7 +22,7 @@ const GradeService = {
     },
 
     async deleteGrade(id, user) {
-        if (!isTeacher(user)) throw new Error("Unauthorized");
+        if (!user || !isTeacher(user)) throw new Error("Unauthorized");
         return await GradeRepository.deleteGrade(id);
     },
 
@@ -31,12 +31,12 @@ const GradeService = {
     },
 
     async getAllGrades(user) {
-        if (!isTeacher(user)) throw new Error("Unauthorized");
+        if (!user || !isTeacher(user)) throw new Error("Unauthorized");
         return await GradeRepository.getAllGrades();
     },
 
     async getGradesBySemester(studentId, semester, user) {
-        if (user.student_id !== studentId) throw new Error("Unauthorized");
+        if (!user || user.student_id !== studentId) throw new Error("Unauthorized");
         return await GradeRepository.getGradesBySemester(studentId, semester);
     },
 };
