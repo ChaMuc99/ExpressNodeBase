@@ -1,3 +1,4 @@
+
 module.exports = {
     DB_NAME:'school_management',
     DB_USERNAME:'tunglam',
@@ -6,5 +7,5 @@ module.exports = {
     DB_PORT:'5432',
     DB_DIALECT:'postgres',
     PORT:'3009',
-    jwtSecret: 'base-express',
+    JWT_SECRET: 'base-express',
 }

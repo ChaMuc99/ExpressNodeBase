@@ -6,42 +6,43 @@ const GradeController = require('../controllers/GradeController');
 const TeacherController = require('../controllers/TeacherController');
 const CourseRegistrationController = require('../controllers/CourseRegistrationController');
 const authenticate = require('../middleware/Authentication');
+const AuthController = require('../controllers/AuthController');
+const roleAuthorization = require('../middleware/RoleAuthorization');
 
 // Test route
 routers.get('/test', (req, res) => {
     res.json({ message: 'Hello World !!!' });
 });
 
-// Student routes
-routers.post('/login', StudentController.loginStudent);
+// login
+routers.post('/login', AuthController.login);
 
-routers.post('/student', authenticate, StudentController.createStudent);
-routers.put('/student/:id', authenticate, StudentController.updateStudent);
-routers.delete('/student/:id', authenticate, StudentController.deleteStudent);
-routers.get('/student/:id', authenticate, StudentController.getStudent);
-routers.get('/students', authenticate, StudentController.getAllStudents);
+// Student routes
+routers.post('/student', authenticate, roleAuthorization(['teacher']), StudentController.createStudent);
+routers.put('/student/:id', authenticate, roleAuthorization(['teacher']), StudentController.updateStudent);
+routers.delete('/student/:id', authenticate, roleAuthorization(['teacher']),  StudentController.deleteStudent);
+routers.get('/student/:id', authenticate, roleAuthorization(['teacher']),  StudentController.getStudent);
+routers.get('/students', authenticate, roleAuthorization(['teacher']),  StudentController.getAllStudents);
 
 // Course routes
-routers.post('/course', authenticate, CourseController.createCourse);
-routers.put('/course/:id', authenticate, CourseController.updateCourse);
-routers.delete('/course/:id', authenticate, CourseController.deleteCourse);
-routers.get('/course/:id', authenticate, CourseController.getCourseById);
-routers.get('/courses', authenticate, CourseController.getAllCourses);
+routers.post('/course', authenticate, roleAuthorization(['teacher']),  CourseController.createCourse);
+routers.put('/course/:id', authenticate, roleAuthorization(['teacher']),  CourseController.updateCourse);
+routers.delete('/course/:id', authenticate, roleAuthorization(['teacher']),  CourseController.deleteCourse);
+routers.get('/course/:id', authenticate, roleAuthorization(['teacher']),  CourseController.getCourseById);
+routers.get('/courses', authenticate, roleAuthorization(['teacher']),  CourseController.getAllCourses);
 
 // Teacher routes
-routers.post('/login/teacher', TeacherController.loginTeacher); 
-
-routers.post('/teacher',TeacherController.createTeacher);
-routers.put('/teacher/:id', TeacherController.updateTeacher);
-routers.delete('/teacher/:id',TeacherController.deleteTeacher);
-routers.get('/teacher/:id',TeacherController.getTeacher);
-routers.get('/teachers',TeacherController.getAllTeachers);
+routers.post('/teacher', authenticate,  isAdmin, TeacherController.createTeacher);
+routers.put('/teacher/:id', authenticate,  isAdmin,  TeacherController.updateTeacher);
+routers.delete('/teacher/:id', authenticate,  isAdmin, TeacherController.deleteTeacher);
+routers.get('/teacher/:id', authenticate,  isAdmin, TeacherController.getTeacher);
+routers.get('/teachers', authenticate,  isAdmin, TeacherController.getAllTeachers);
 
 // Grade routes
-routers.post('/grade', authenticate, GradeController.createGrade);
-routers.put('/grade/:id', authenticate, GradeController.updateGrade);
-routers.delete('/grade/:id', authenticate, GradeController.deleteGrade);
-routers.get('/grade/:id', authenticate, GradeController.getGradeById);
+routers.post('/grade', authenticate, roleAuthorization(['teacher']),  GradeController.createGrade);
+routers.put('/grade/:id', authenticate, roleAuthorization(['teacher']),  GradeController.updateGrade);
+routers.delete('/grade/:id', authenticate, roleAuthorization(['teacher']),  GradeController.deleteGrade);
+routers.get('/grade/:id', authenticate, roleAuthorization(['teacher']),  GradeController.getGradeById);
 routers.get('/grades', authenticate, GradeController.getAllGrades);
 routers.get('/grades/semester/:semester', authenticate, GradeController.getGradesBySemester);
 

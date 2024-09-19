@@ -1,6 +1,6 @@
 const CoursesRepository = require('../repositories/CourseRepository');
 
-const CoursesService = {
+const CourseService = {
   async createCourse(data) {
     return CoursesRepository.createCourse(data);
   },
@@ -22,4 +22,4 @@ const CoursesService = {
   }
 };
 
-module.exports = CoursesService;
+module.exports = CourseService;

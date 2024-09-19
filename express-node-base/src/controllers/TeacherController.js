@@ -1,29 +1,12 @@
 const TeachersService = require('../services/TeacherService');
-const jwt = require('jsonwebtoken');
-const { JWT_SECRET } = require('../configs/config');
+const { isValidTeacher } = require('../utils/Validate'); 
 
 const TeacherController = {
-    
-    async loginTeacher(req, res) {
-        try {
-            const { email, password } = req.body;
-            const result = await TeachersService.authenticateTeacher(email, password);
-            res.json(result);
-        } catch (error) {
-            res.status(400).json({ message: error.message });
-        }
-    },
-
-    async createTeacher(req, res, next) {
+    async createTeacher(req, res) {
         try {
             const { value: data, error } = isValidTeacher(req.body);
             if (error) {
-                return res.status(400).send({ error: error.message || error });
-            }
-
-            // Check if the user is an admin
-            if (!req.user || req.user.role !== 'admin') {
-                return res.status(403).send({ error: 'Forbidden: Only admins can create a teacher.' });
+                return res.status(400).json({ error: error.message || error });
             }
 
             const teacher = await TeachersService.createTeacher(data);
@@ -33,7 +16,7 @@ const TeacherController = {
                 statusCode: 201,
             });
         } catch (err) {
-            res.status(400).send({
+            res.status(400).json({
                 error: err.message || err,
                 status: 'error',
                 statusCode: 400,
@@ -41,17 +24,13 @@ const TeacherController = {
         }
     },
 
-    async deleteTeacher(req, res, next) {
+    async deleteTeacher(req, res) {
         try {
             const teacher_id = req.params.id;
-            // Check if the user is an admin
-            if (!req.user || req.user.role !== 'admin') {
-                return res.status(403).send({ error: 'Forbidden: Only admins can delete a teacher.' });
-            }
             await TeachersService.deleteTeacher(teacher_id);
-            return res.status(204).send(); // No Content
+            return res.status(204).send();  // No Content
         } catch (err) {
-            res.status(400).send({
+            res.status(400).json({
                 error: err.message || err,
                 status: 'error',
                 statusCode: 400,
@@ -59,25 +38,24 @@ const TeacherController = {
         }
     },
 
-    async updateTeacher(req, res, next) {
+    async updateTeacher(req, res) {
         try {
             const teacher_id = req.params.id;
             const { value: data, error } = isValidTeacher(req.body);
             if (error) {
-                return res.status(400).send({ error: error.message || error });
+                return res.status(400).json({ error: error.message || error });
             }
-            // Check if the user is an admin
-            if (!req.user || req.user.role !== 'admin') {
-                return res.status(403).send({ error: 'Forbidden: Only admins can update a teacher.' });
-            }
+
             await TeachersService.updateTeacher(teacher_id, data);
+            const updatedTeacher = await TeachersService.searchTeacher(teacher_id);
+
             return res.status(200).json({
-                data: await TeachersService.searchTeacher(teacher_id),
+                data: updatedTeacher,
                 status: 'success',
                 statusCode: 200,
             });
         } catch (err) {
-            res.status(400).send({
+            res.status(400).json({
                 error: err.message || err,
                 status: 'error',
                 statusCode: 400,
@@ -85,12 +63,12 @@ const TeacherController = {
         }
     },
 
-    async getTeacher(req, res, next) {
+    async getTeacher(req, res) {
         try {
             const teacher_id = req.params.id;
             const teacher = await TeachersService.searchTeacher(teacher_id);
             if (!teacher) {
-                return res.status(404).send({ error: 'Teacher not found' });
+                return res.status(404).json({ error: 'Teacher not found' });
             }
             return res.status(200).json({
                 data: teacher,
@@ -98,7 +76,7 @@ const TeacherController = {
                 statusCode: 200,
             });
         } catch (err) {
-            res.status(400).send({
+            res.status(400).json({
                 error: err.message || err,
                 status: 'error',
                 statusCode: 400,
@@ -106,7 +84,7 @@ const TeacherController = {
         }
     },
 
-    async getAllTeachers(req, res, next) {
+    async getAllTeachers(req, res) {
         try {
             const teachers = await TeachersService.getAllTeachers();
             return res.status(200).json({
@@ -115,7 +93,7 @@ const TeacherController = {
                 statusCode: 200,
             });
         } catch (err) {
-            res.status(400).send({
+            res.status(400).json({
                 error: err.message || err,
                 status: 'error',
                 statusCode: 400,

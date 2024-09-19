@@ -1,18 +1,27 @@
 const StudentsService = require('../services/StudentService');
 const { isValidStudent } = require('../utils/Validate');
+const isTeacher = require('../utils/Authorization');
 
 const StudentController = {
     async createStudent(req, res, next) {
         try {
-            const { value: data, error } = isValidStudent(req.body);
-            if (error) {
-                return res.status(400).send({ error: error.message || error });
-            }
+             // Authorization check to ensure only teachers can create students
+             const user = req.user;  // Assuming req.user is populated from the authentication middleware
+             if (!isTeacher(user)) {
+                 return res.status(403).send({
+                     error: "Forbidden: You do not have permission to create a student.",
+                     status: 'error',
+                     statusCode: 403,
+                 });
+             }
+ 
+             // Validate student data
+             const { value: data, error } = isValidStudent(req.body);
+             if (error) {
+                 return res.status(400).send({ error: error.message || error });
+             }
 
-            // Check if the user is a teacher or admin
-            if (!req.user || !['teacher', 'admin'].includes(req.user.role)) {
-                return res.status(403).send({ error: 'Forbidden: You do not have permission to create a student.' });
-            }
+           
 
             const student = await StudentsService.createStudent(data);
             return res.status(201).json({
@@ -28,24 +37,7 @@ const StudentController = {
             });
         }
     },
-    async loginStudent(req, res, next) {
-        try {
-            const { student_id, password } = req.body;
-            // Assuming you validate the student_id and password
-            const token = await StudentsService.login({ student_id, password });
-            return res.json({
-                token,
-                status: 'success',
-                statusCode: 200,
-            });
-        } catch (err) {
-            res.status(400).send({
-                error: err.message || err,
-                status: 'error',
-                statusCode: 400,
-            });
-        }
-    },
+   
 
     async deleteStudent(req, res, next) {
         try {

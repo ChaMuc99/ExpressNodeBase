@@ -1,10 +1,10 @@
 const Teacher = require('../models/Teacher');
 const sequelize = require('../configs/connections/postgresql');
 
-class TeachersRepository {
+class TeacherRepository {
 
     async getTeacherByEmail(email) {
-        return await Teacher.findOne({ where: { email } });
+        return await Teacher.findOne({ where: { teacher_email: email } });
     }
 
 
@@ -36,4 +36,4 @@ class TeachersRepository {
     }
 }
 
-module.exports = TeachersRepository;
+module.exports = new TeacherRepository();

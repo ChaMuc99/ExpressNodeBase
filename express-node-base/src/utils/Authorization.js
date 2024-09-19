@@ -1,9 +1,11 @@
-// Function to check if the user is a teacher
-function isTeacher(user) {
-    // Assuming user object has a role field to check if it's 'teacher'
-    return user && user.role === 'teacher';
+// Function to check if the user is an admin
+function isAdmin(user) {
+    return user && user.role === 'admin';
 }
 
-module.exports = {
-    isTeacher,
-};
+// Function to check if the user is a teacher or admin
+function isTeacherOrAdmin(user) {
+    return user && (user.role === 'teacher' || user.role === 'admin');
+}
+
+module.exports = { isAdmin, isTeacherOrAdmin };

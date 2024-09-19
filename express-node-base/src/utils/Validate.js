@@ -1,7 +1,7 @@
 const Joi = require('joi');
 
 function isValidStudent(data) {
-    return Joi.object().keys({
+    return Joi.object({
         student_id: Joi.string().trim().max(45).required(),
         student_name: Joi.string().trim().max(80).required(),
         student_dateofbirth: Joi.date().iso().required(),
@@ -26,6 +26,7 @@ function isValidTeacher(data) {
         teacher_address: Joi.string().trim().max(80).optional(),
         teacher_phone: Joi.string().trim().max(45).required(),
         teacher_email: Joi.string().trim().email().max(45).required(),
+        teacher_password: Joi.string().min(6).required(),
         teacher_department: Joi.string().trim().max(45).required(),
         created_at: Joi.date().iso().required(),
         updated_at: Joi.date().iso().required(),

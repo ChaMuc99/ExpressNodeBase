@@ -2,7 +2,12 @@ const StudentsRepository = require("../repositories/StudentsRepository");
 const appConfig = require('../configs/config');
 const jwt = require('jsonwebtoken');
 
-const StudentsService = {
+const StudentService = {
+
+    async findByEmail(email) {
+        return await Student.findOne({ where: { email } });
+    },
+
     async createStudent(data) {
         return await StudentsRepository.create(data);
     },
@@ -24,4 +29,4 @@ const StudentsService = {
     },
 };
 
-module.exports = StudentsService;
+module.exports = StudentService;
