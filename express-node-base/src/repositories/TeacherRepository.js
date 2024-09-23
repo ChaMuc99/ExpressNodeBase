@@ -7,19 +7,18 @@ class TeacherRepository {
         return await Teacher.findOne({ where: { teacher_email: email } });
     }
 
-
-    static create(data, transaction) {
+    async create(data, transaction) {
         return Teacher.create(data, { transaction, returning: true });
     }
 
-    static delete(teacher_id, transaction) {
+    async delete(teacher_id, transaction) {
         return Teacher.destroy({
             where: { teacher_id },
             transaction,
         });
     }
 
-    static update(teacher_id, data, transaction) {
+    async update(teacher_id, data, transaction) {
         return Teacher.update(data, {
             where: { teacher_id },
             transaction,
@@ -27,11 +26,11 @@ class TeacherRepository {
         });
     }
 
-    static search(teacher_id) {
+    async search(teacher_id) {
         return Teacher.findByPk(teacher_id);
     }
 
-    static getAll() {
+    async getAll() {
         return Teacher.findAll();
     }
 }

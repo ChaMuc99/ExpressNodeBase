@@ -1,11 +1,12 @@
 const StudentsRepository = require("../repositories/StudentsRepository");
 const appConfig = require('../configs/config');
 const jwt = require('jsonwebtoken');
+const  Student  = require('../models/Student');
 
 const StudentService = {
 
     async findByEmail(email) {
-        return await Student.findOne({ where: { email } });
+        return await Student.findOne({ where: { student_email: email } });
     },
 
     async createStudent(data) {

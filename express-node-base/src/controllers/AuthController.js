@@ -7,13 +7,13 @@ const AdminService = require('../services/AdminService'); // Admin service to fe
 const AuthController = {
     async login(req, res) {
         const { email, password } = req.body;
-
+    
         try {
             let user = null;
             let role = '';
-
+    
             // Check if the user is an admin
-            user = await AdminService.findByEmail(email);
+            user = await AdminService.getAdminByEmail(email);
             if (user) {
                 role = 'admin';
             } else {
@@ -31,12 +31,16 @@ const AuthController = {
                     }
                 }
             }
-
+    
             // Directly compare the password (since it's stored as plain text)
-            if (user.password !== password) {
+            if (role === 'teacher' && user.teacher_password !== password) {
+                return res.status(401).json({ message: 'Invalid email or password' });
+            } else if (role === 'admin' && user.password !== password) {
+                return res.status(401).json({ message: 'Invalid email or password' });
+            } else if (role === 'student' && user.password !== password) {
                 return res.status(401).json({ message: 'Invalid email or password' });
             }
-
+    
             // Generate JWT with the role (admin, teacher, or student)
             const token = jwt.sign(
                 {
@@ -47,19 +51,20 @@ const AuthController = {
                 JWT_SECRET,
                 { expiresIn: '1h' }
             );
-
+    
             // Return the token
             return res.status(200).json({
                 token,
                 role,
                 message: `Login successful as ${role}`,
             });
-
+    
         } catch (error) {
             console.error('Login error:', error);
             return res.status(500).json({ message: 'Internal server error' });
         }
     }
+    
 };
 
 module.exports = AuthController;

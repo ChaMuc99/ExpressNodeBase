@@ -120,19 +120,19 @@ const StudentController = {
     async getAllStudents(req, res) {
         try {
             const students = await StudentsService.getAllStudents();
-            return res.status(200).json({
-                data: students,
-                status: 'success',
-                statusCode: 200,
-            });
-        } catch (err) {
-            res.status(400).json({
-                error: err.message || err,
-                status: 'error',
-                statusCode: 400,
-            });
+            console.log('Retrieved students:', students);
+
+            if (!res.headersSent) {
+                return res.status(200).json(students);
+            }
+        } catch (error) {
+            console.error('Error fetching students:', error);
+
+            if (!res.headersSent) {
+                return res.status(500).json({ message: 'Internal server error' });
+            }
         }
-    },
+    }
 };
 
 module.exports = StudentController;

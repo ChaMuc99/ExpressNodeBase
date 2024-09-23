@@ -1,15 +1,18 @@
 const TeacherRepository = require("../repositories/TeacherRepository");
-const appConfig = require('../configs/config');
 const jwt = require('jsonwebtoken');
-const Teacher = require('../models/Teacher');
 const { JWT_SECRET } = require('../configs/config');
 
 const TeacherService = {
-
     async findByEmail(email) {
-        return await Teacher.findOne({ where: { email } });
+        try {
+            const teacher = await TeacherRepository.getTeacherByEmail(email);
+            console.log('Retrieved Teacher Data:', teacher);
+            return teacher;
+        } catch (error) {
+            console.error('Database query error:', error);
+            throw error;
+        }
     },
-
 
     async createTeacher(data) {
         return await TeacherRepository.create(data);
@@ -32,7 +35,7 @@ const TeacherService = {
     },
 
     async login(payload) {
-        const token = jwt.sign(payload, appConfig.SECRET_KEY, { expiresIn: '1d' });
+        const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1d' });
         return token;
     },
 };
