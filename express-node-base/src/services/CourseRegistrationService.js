@@ -1,58 +1,120 @@
 const CourseRegistrationRepository = require('../repositories/CourseRegistrationRepository');
-const CourseRepository = require('../repositories/CourseRepository');
-const _ = require('lodash');
+const Course = require('../models/Course');
+const Student = require('../models/Student');
+const CourseRegistration = require('../models/CourseRegistration');
+const { v4: uuidv4 } = require('uuid');
 
 const CourseRegistrationService = {
-    async registerCourse(user, data) {
-        if (user.role !== 'student' || user.student_id !== data.student_id) {
-            return { success: false, message: 'Unauthorized' };
+    async registerCourse(student_id, course_id) {
+        try {
+     
+            const student = await Student.findOne({ where: { student_id } });
+            if (!student) {
+                return { success: false, message: 'Student not found' };
+            }
+    
+      
+            const course = await Course.findOne({ where: { course_id } });
+            if (!course) {
+                return { success: false, message: 'Course not found' };
+            }
+    
+     
+            const alreadyRegistered = await CourseRegistration.findOne({
+                where: { student_id, course_id }
+            });
+            if (alreadyRegistered) {
+                return { success: false, message: 'Student is already registered for this course' };
+            }
+    
+            const registration = await CourseRegistration.create({
+                registration_id: uuidv4(),
+                student_id,
+                course_id,
+                registration_date: new Date(),
+                created_by: 'system', 
+                updated_by: 'system'
+            });
+    
+            return {
+                success: true,
+                data: registration
+            };
+    
+        } catch (error) {
+            console.error('Error registering student for course:', error);
+            return { success: false, message: 'An error occurred during registration' };
         }
-
-        const courseExists = await CourseRepository.getCourseById(data.course_id);
-        if (!courseExists) {
-            return { success: false, message: 'Course not found' };
-        }
-
-        const alreadyRegistered = await CourseRegistrationRepository.isAlreadyRegistered(data.student_id, data.course_id);
-        if (alreadyRegistered) {
-            return { success: false, message: 'Already registered for this course' };
-        }
-
-        const registration = await CourseRegistrationRepository.create(data);
-        return { success: true, data: registration };
     },
 
-    async cancelRegistration(user, courseId) {
-        if (user.role !== 'student') {
-            return { success: false, message: 'Unauthorized' };
+    async cancelCourseRegistrationService(registration_id) {
+        try {
+            // Check if the registration exists
+            const registration = await CourseRegistration.findOne({ where: { registration_id } });
+    
+            if (!registration) {
+                throw new Error('Registration not found');
+            }
+    
+            // Delete the registration
+            await registration.destroy();
+    
+            return {
+                message: 'Course registration canceled successfully',
+                status: 'success',
+                statusCode: 200
+            };
+        } catch (err) {
+            throw err; // Re-throw the error for the controller to handle
         }
-
-        const registration = await CourseRegistrationRepository.getRegistrationByStudentAndCourse(user.student_id, courseId);
-        if (!registration) {
-            return { success: false, message: 'Registration not found' };
-        }
-
-        await CourseRegistrationRepository.deleteRegistration(registration.registration_id);
-        return { success: true, message: 'Registration canceled' };
     },
 
-    async getAvailableCourses(user, studentId) {
-        if (user.role !== 'student' || user.student_id !== studentId) {
-            return { success: false, message: 'Unauthorized' };
+    async getAvailableCourses(studentId) {
+        try {
+            // Validate studentId
+            if (!studentId) {
+                return { success: false, message: 'Student ID is required' };
+            }
+    
+          
+            const availableCourses = await Course.findAll({
+             
+            });
+    
+            return {
+                success: true,
+                data: availableCourses
+            };
+        } catch (error) {
+            console.error('Error fetching available courses:', error);
+            return { success: false, message: 'An error occurred while fetching courses' };
         }
-
-        const availableCourses = await CourseRepository.getAvailableCourses(studentId);
-        return { success: true, data: availableCourses };
     },
+    
 
-    async viewRegisteredCourses(user, studentId) {
-        if (user.role !== 'student' || user.student_id !== studentId) {
-            return { success: false, message: 'Unauthorized' };
+    async viewRegisteredCourses(student_id) {
+        try {
+            const registeredCourses = await CourseRegistration.findAll({
+                where: { student_id },
+                include: [{
+                    model: Course,
+                    attributes: ['course_id', 'course_name', 'course_credits', 'course_schedule'] // Fields from the Course model
+                }]
+            });
+    
+            if (registeredCourses.length === 0) {
+                return { success: false, message: 'No courses registered for this student' };
+            }
+    
+            return {
+                success: true,
+                data: registeredCourses
+            };
+        } catch (error) {
+            console.error('Error fetching registered courses:', error);
+            return { success: false, message: 'An error occurred while fetching registered courses' };
         }
-
-        const registeredCourses = await CourseRegistrationRepository.getRegisteredCourses(studentId);
-        return { success: true, data: registeredCourses };
-    },
+    }
 };
 
 module.exports = CourseRegistrationService;

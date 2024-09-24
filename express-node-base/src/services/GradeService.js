@@ -1,44 +1,65 @@
 const GradeRepository = require("../repositories/GradeRepository");
 const { isValidGrade } = require('../utils/Validate');
-const { isTeacher } = require('../utils/Authorization');  // Updated path
 
 const GradeService = {
-    async createGrade(data, user) {
-        if (!user || !isTeacher(user)) throw new Error("Unauthorized");
-
+    async createGrade(data) {
         const { error } = isValidGrade(data);
         if (error) throw new Error(error.message);
 
         return await GradeRepository.create(data);
     },
 
-    async updateGrade(id, data, user) {
-        if (!user || !isTeacher(user)) throw new Error("Unauthorized");
-
+    async updateGrade(id, data) {
         const { error } = isValidGrade(data);
         if (error) throw new Error(error.message);
 
         return await GradeRepository.updateGrade(id, data);
     },
 
-    async deleteGrade(id, user) {
-        if (!user || !isTeacher(user)) throw new Error("Unauthorized");
-        return await GradeRepository.deleteGrade(id);
+    async updateGrade(id, data) {
+        const { error } = isValidGrade(data);
+        if (error) throw new Error(error.message);
+    
+        return await GradeRepository.updateGrade(id, data);
     },
+  
+    async deleteGrade(gradeId) {
+        try {
+          const result = await GradeRepository.deleteGrade(gradeId);
+          if (result === 0) {
+            throw new Error('Grade not found'); // Handle case where no rows are deleted
+          }
+          return result; // Return the result if successful
+        } catch (error) {
+          console.error('Error in GradeService.deleteGrade:', error);
+          throw new Error('Failed to delete grade');
+        }
+      }
+      ,
+      
 
     async getGradeById(id) {
         return await GradeRepository.getGradeById(id);
     },
 
-    async getAllGrades(user) {
-        if (!user || !isTeacher(user)) throw new Error("Unauthorized");
+    async getAllGrades() {
         return await GradeRepository.getAllGrades();
     },
 
-    async getGradesBySemester(studentId, semester, user) {
-        if (!user || user.student_id !== studentId) throw new Error("Unauthorized");
-        return await GradeRepository.getGradesBySemester(studentId, semester);
-    },
+ 
+   async getGradesBySemester(semester) {
+        // Trim whitespace from the semester input
+        semester = semester.trim();
+        console.log('Fetching grades for semester:', semester);
+    
+        const grades = await GradeRepository.getGradesBySemester(semester);
+        console.log('Fetched grades:', grades);
+    
+        return grades;
+    }
+    
+    
+    
 };
 
 module.exports = GradeService;

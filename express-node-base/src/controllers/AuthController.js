@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../configs/config');
-const TeacherService = require('../services/TeacherService'); // Service to check teachers
-const StudentService = require('../services/StudentService'); // Service to check students
-const AdminService = require('../services/AdminService'); // Admin service to fetch admin user
+const TeacherService = require('../services/TeacherService'); 
+const StudentService = require('../services/StudentService');
+const AdminService = require('../services/AdminService');
 
 const AuthController = {
     async login(req, res) {

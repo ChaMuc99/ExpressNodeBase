@@ -6,8 +6,7 @@ const Course = sequelize.define('Course', {
     type: DataTypes.STRING(45),
     primaryKey: true
   },
-  course_name: 
-  {
+  course_name: {
     type: DataTypes.STRING(80),
     allowNull: false
   },
@@ -15,39 +14,40 @@ const Course = sequelize.define('Course', {
     type: DataTypes.INTEGER,
     allowNull: false
   },
-  teacher_id: 
-  { type: DataTypes.STRING(45), 
+  teacher_id: {
+    type: DataTypes.STRING(45),
     allowNull: false
   },
   course_schedule: {
     type: DataTypes.STRING(80),
     allowNull: false
   },
-  course_room: 
-  {
-    type: DataTypes.STRING(45), 
+  course_room: {
+    type: DataTypes.STRING(45),
     allowNull: false
   },
-  created_at: 
-  { type: DataTypes.DATE,
+  created_at: {
+    type: DataTypes.DATE,
     allowNull: false
   },
-  updated_at: 
-  { type: DataTypes.DATE,
+  updated_at: {
+    type: DataTypes.DATE,
     allowNull: false
   },
   created_by: {
-  type:DataTypes.STRING(80),
-  allowNull: false
-},
-  updated_by: { 
     type: DataTypes.STRING(80),
     allowNull: false
   },
-
+  updated_by: {
+    type: DataTypes.STRING(80),
+    allowNull: false
+  }
 }, {
   tableName: 'course',
-  timestamps: false
+  timestamps: true,
+  createdAt: 'created_at',
+  updatedAt: 'updated_at'
 });
 
+// Export the Course model without associations for now
 module.exports = Course;

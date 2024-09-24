@@ -1,12 +1,13 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../configs/connections/postgresql');
+const { v4: uuidv4 } = require('uuid');
 
 const CourseRegistration = sequelize.define('CourseRegistration', {
     registration_id: {
         type: DataTypes.STRING(45),
         primaryKey: true,
         allowNull: false,
-        
+        defaultValue: () => uuidv4()
     },
     student_id: {
         type: DataTypes.STRING(45),
@@ -18,15 +19,8 @@ const CourseRegistration = sequelize.define('CourseRegistration', {
     },
     registration_date: {
         type: DataTypes.DATEONLY,
-        allowNull: false
-    },
-    created_at: {
-        type: DataTypes.DATEONLY,
-        allowNull: false
-    },
-    updated_at: {
-        type: DataTypes.DATEONLY,
-        allowNull: false
+        allowNull: false,
+        defaultValue: DataTypes.NOW
     },
     created_by: {
         type: DataTypes.STRING(80),
@@ -35,10 +29,23 @@ const CourseRegistration = sequelize.define('CourseRegistration', {
     updated_by: {
         type: DataTypes.STRING(80),
         allowNull: false
+    },
+    created_at: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: DataTypes.NOW
+    },
+    updated_at: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: DataTypes.NOW
     }
 }, {
     tableName: 'course_registration',
-    timestamps: false
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
 });
 
+// Export the CourseRegistration model without associations for now
 module.exports = CourseRegistration;

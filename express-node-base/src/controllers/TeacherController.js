@@ -30,7 +30,11 @@ const TeacherController = {
         try {
             const teacher_id = req.params.id;
             await TeachersService.deleteTeacher(teacher_id);
-            return res.status(204).send();  // No Content
+            return res.status(200).json({
+                status: 'success',
+                message: `Teacher with ID ${teacher_id} has been successfully deleted.`,
+                statusCode: 204,
+            });
         } catch (err) {
             res.status(400).json({
                 error: err.message || err,

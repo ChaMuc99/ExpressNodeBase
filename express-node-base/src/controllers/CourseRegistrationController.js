@@ -1,71 +1,96 @@
 const CourseRegistrationService = require('../services/CourseRegistrationService');
 const { isValidCourseRegistration } = require('../utils/Validate');
+const CourseRegistration = require('../models/CourseRegistration');
 
 const CourseRegistrationController = {
     async registerCourse(req, res, next) {
         try {
-            const { value: data, error } = isValidCourseRegistration(req.body);
-            if (error) {
-                return res.status(400).json({ error: error.message });
+            const { course_id, student_id } = req.body;
+    
+            if (!course_id || !student_id) {
+                return res.status(400).json({ message: 'course_id and student_id are required.' });
             }
-
-            const result = await CourseRegistrationService.registerCourse(req.user, data);
+    
+            // Call service to handle registration logic
+            const result = await CourseRegistrationService.registerCourse(student_id, course_id);
+    
             if (!result.success) {
-                return res.status(400).json({ error: result.message });
+                return res.status(400).json({ message: result.message });
             }
-
-            res.json({
-                data: result.data,
-                status: 'success',
-                statusCode: 200
+    
+            res.status(200).json({
+                message: 'Student successfully registered to the course',
+                data: result.data
             });
         } catch (err) {
             next(err);
         }
     },
 
-    async cancelRegistration(req, res, next) {
+    async  cancelCourseRegistration(req, res, next) {
         try {
-            const result = await CourseRegistrationService.cancelRegistration(req.user, req.body.course_id);
-            if (!result.success) {
-                return res.status(400).json({ error: result.message });
+            const { registration_id } = req.params;
+    
+            // Check if the registration exists
+            const registration = await CourseRegistration.findOne({ where: { registration_id } });
+    
+            if (!registration) {
+                return res.status(404).json({ message: 'Registration not found' });
             }
-
-            res.json({
-                data: result.data,
+    
+            // Delete the registration
+            await registration.destroy();
+    
+            res.status(200).json({
+                message: 'Course registration canceled successfully',
                 status: 'success',
                 statusCode: 200
             });
         } catch (err) {
             next(err);
         }
-    },
+    }
+,    
 
     async getAvailableCourses(req, res, next) {
         try {
-            const result = await CourseRegistrationService.getAvailableCourses(req.user, req.body.student_id);
+            const { student_id } = req.params; // Extract student_id from URL parameters
+            console.log('Student ID:', student_id); // Log the student ID for debugging
+    
+            // Validate if student_id is provided
+            if (!student_id) {
+                return res.status(400).json({ error: 'Student ID is required.' });
+            }
+    
+            const result = await CourseRegistrationService.getAvailableCourses(student_id);
+            
             if (!result.success) {
                 return res.status(400).json({ error: result.message });
             }
-
+    
             res.json({
                 data: result.data,
                 status: 'success',
                 statusCode: 200
             });
         } catch (err) {
+            console.error('Error in getAvailableCourses:', err); // Log error for debugging
             next(err);
         }
     },
+    
+    
 
     async viewRegisteredCourses(req, res, next) {
         try {
-            const result = await CourseRegistrationService.viewRegisteredCourses(req.user, req.body.student_id);
+            const { student_id } = req.params; // Extract student_id from the URL params
+            const result = await CourseRegistrationService.viewRegisteredCourses(student_id);
+    
             if (!result.success) {
                 return res.status(400).json({ error: result.message });
             }
-
-            res.json({
+    
+            return res.json({
                 data: result.data,
                 status: 'success',
                 statusCode: 200
@@ -73,7 +98,7 @@ const CourseRegistrationController = {
         } catch (err) {
             next(err);
         }
-    },
+    }
 };
 
 module.exports = CourseRegistrationController;

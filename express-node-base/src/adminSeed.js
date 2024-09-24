@@ -1,6 +1,6 @@
 // src/adminSeed.js
-const AdminService = require('./services/AdminService'); // Ensure path is correct
-const sequelize = require('./configs/connections/postgresql'); // Ensure path is correct
+const AdminService = require('./services/AdminService'); 
+const sequelize = require('./configs/connections/postgresql'); 
 
 console.log('AdminService:', AdminService);
 

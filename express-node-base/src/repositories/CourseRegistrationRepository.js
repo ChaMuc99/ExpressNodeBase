@@ -1,4 +1,6 @@
-const CourseRegistrationModel = require('../models/CourseRegistration');
+const  Op  = require('sequelize');
+const CourseRegistrationModel = require('../models/CourseRegistration'); 
+const CourseModel = require('../models/Course'); 
 
 class CourseRegistrationRepository {
     static create(data) {
@@ -19,6 +21,25 @@ class CourseRegistrationRepository {
 
     static getRegisteredCourses(studentId) {
         return CourseRegistrationModel.findAll({ where: { student_id: studentId } });
+    }
+
+    static async getAvailableCourses(studentId) {
+        if (!studentId) {
+            throw new Error('Student ID is required');
+        }
+    
+        // Get all registered course IDs for the student
+        const registeredCourses = await this.getRegisteredCourses(studentId);
+        const registeredCourseIds = registeredCourses.map(reg => reg.course_id);
+    
+        // Find all courses that are not in the registeredCourseIds
+        return CourseModel.findAll({
+            where: {
+                id: {
+                    [Op.not]: registeredCourseIds // Exclude registered courses
+                }
+            }
+        });
     }
 }
 

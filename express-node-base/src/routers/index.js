@@ -44,12 +44,12 @@ routers.put('/grade/:id', authenticate, roleAuthorization(['teacher']), GradeCon
 routers.delete('/grade/:id', authenticate, roleAuthorization(['teacher']), GradeController.deleteGrade);
 routers.get('/grade/:id', authenticate, roleAuthorization(['teacher']), GradeController.getGradeById);
 routers.get('/grades', authenticate, roleAuthorization(['teacher']), GradeController.getAllGrades);
-routers.get('/grades/semester/:semester', authenticate, roleAuthorization(['teacher']), GradeController.getGradesBySemester);
+routers.get('/grades/semester/:semester', GradeController.getGradesBySemester);
 
 // Course Registration routes
-routers.post('/course-registration', authenticate, CourseRegistrationController.registerCourse);
-routers.delete('/course-registration/:registrationId', authenticate, CourseRegistrationController.cancelRegistration);
-routers.get('/available-courses/:studentId', authenticate, CourseRegistrationController.getAvailableCourses);
-routers.get('/registered-courses/:studentId', authenticate, CourseRegistrationController.viewRegisteredCourses);
+routers.post('/course-registration', CourseRegistrationController.registerCourse);
+routers.delete('/course-registration/:registration_id', CourseRegistrationController.cancelCourseRegistration);
+routers.get('/available-courses/:student_id', CourseRegistrationController.getAvailableCourses);
+routers.get('/registered-courses/:student_id',CourseRegistrationController.viewRegisteredCourses);
 
 module.exports = routers;

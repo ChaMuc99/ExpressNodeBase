@@ -57,6 +57,8 @@ function isValidCourse(data) {
       teacher_id: Joi.string().max(45).required(),
       course_schedule: Joi.string().max(80).required(),
       course_room: Joi.string().max(45).required(),
+      created_by: Joi.string().max(80).required(),
+      updated_by: Joi.string().max(80).required()
     }).validate(data);
   }
 
@@ -64,7 +66,11 @@ function isValidCourse(data) {
     return Joi.object().keys({
         student_id: Joi.string().trim().required(),
         course_id: Joi.string().trim().required(),
-        registration_date: Joi.date().required()
+        created_at: Joi.date().iso().required(),
+
+        updated_at: Joi.date().iso().required(),  
+        created_by: Joi.string().trim().max(80).required(),
+        updated_by: Joi.string().trim().max(80).required()
     }).validate(data);
 }
 module.exports = {
