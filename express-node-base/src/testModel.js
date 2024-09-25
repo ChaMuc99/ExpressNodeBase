@@ -3,7 +3,7 @@ const Admin = require('./models/Admin');
 
 async function testModel() {
     try {
-        await Admin.sync(); // Ensure the table is created
+        await Admin.sync(); 
         const admin = await Admin.create({
             email: 'test@example.com',
             password: 'password123',

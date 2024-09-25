@@ -3,17 +3,17 @@ const Joi = require('joi');
 function isValidStudent(data) {
     return Joi.object({
         student_id: Joi.string().trim().max(45).required(),
-        student_name: Joi.string().trim().max(80).required(),
-        student_dateofbirth: Joi.date().iso().required(),
-        student_gender: Joi.string().trim().max(20).required(),
+        student_name: Joi.string().trim().max(80).optional(),
+        student_dateofbirth: Joi.date().iso().optional(),
+        student_gender: Joi.string().trim().max(20).optional(),
         student_address: Joi.string().trim().max(80).optional(),
-        student_phone: Joi.string().trim().max(45).required(),
-        student_email: Joi.string().trim().email().max(45).required(),
-        school_class: Joi.string().trim().max(45).required(),
-        created_at: Joi.date().iso().required(),
-        updated_at: Joi.date().iso().required(),
-        created_by: Joi.string().trim().max(80).required(),
-        updated_by: Joi.string().trim().max(80).required(),
+        student_phone: Joi.string().trim().max(45).optional(),
+        student_email: Joi.string().trim().email().max(45).optional(),
+        school_class: Joi.string().trim().max(45).optional(),
+        created_at: Joi.date().iso().optional(),
+        updated_at: Joi.date().iso().optional(),
+        created_by: Joi.string().trim().max(80).optional(),
+        updated_by: Joi.string().trim().max(80).optional(),
     }).validate(data);
 }
 

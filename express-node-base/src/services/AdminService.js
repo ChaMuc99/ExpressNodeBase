@@ -1,5 +1,5 @@
-// src/services/AdminService.js
-const Admin = require('../models/Admin');  // Adjusted to use Admin model
+
+const Admin = require('../models/Admin'); 
 
 const AdminService = {
     // Create a pre-made admin account (for setup purposes)

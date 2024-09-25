@@ -1,6 +1,6 @@
 const roleAuthorization = (roles = []) => {
     return (req, res, next) => {
-      const user = req.user;  // User should be set by authentication middleware
+      const user = req.user;  
   
       if (!user) {
         return res.status(401).json({
@@ -29,7 +29,7 @@ const roleAuthorization = (roles = []) => {
       next();
     };
   };
-  // Middleware to check if the user is an admin
+  // check if the user is an admin
 const isAdmin = (req, res, next) => {
     if (req.user && req.user.role === 'admin') {
         next();
@@ -38,7 +38,7 @@ const isAdmin = (req, res, next) => {
     }
 };
 
-// Middleware to check if the user is a teacher or admin
+//check if the user is a teacher or admin
 const isTeacherOrAdmin = (req, res, next) => {
     if (req.user && (req.user.role === 'teacher' || req.user.role === 'admin')) {
         next();

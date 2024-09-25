@@ -16,6 +16,7 @@ const StudentService = {
         return await StudentsRepository.delete(student_id);
     },
     async updateStudent(student_id, data) {
+        console.log(data);
         return await StudentsRepository.update(student_id, data);
     },
     async searchStudent(student_id) {
