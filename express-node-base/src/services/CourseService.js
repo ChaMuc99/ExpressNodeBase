@@ -1,4 +1,4 @@
-const CoursesRepository = require('../repositories/CourseRepository');
+const CoursesRepository = require("../repositories/CourseRepository");
 
 const CourseService = {
   async createCourse(data) {
@@ -19,7 +19,7 @@ const CourseService = {
 
   async getAllCourses() {
     return CoursesRepository.getAllCourses();
-  }
+  },
 };
 
 module.exports = CourseService;

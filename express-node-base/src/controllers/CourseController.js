@@ -1,5 +1,5 @@
-const CoursesService = require('../services/CourseService');
-const { isValidCourse } = require('../utils/Validate');
+const CoursesService = require("../services/CourseService");
+const { isValidCourse } = require("../utils/Validate");
 
 const CourseController = {
   async createCourse(req, res, next) {
@@ -9,7 +9,7 @@ const CourseController = {
         return res.status(400).json({ error: error.message });
       }
       const course = await CoursesService.createCourse(data);
-      return res.status(201).json({ course, status: 'success' });
+      return res.status(201).json({ course, status: "success" });
     } catch (err) {
       next(err);
     }
@@ -22,7 +22,7 @@ const CourseController = {
         return res.status(400).json({ error: error.message });
       }
       const course = await CoursesService.updateCourse(req.params.id, data);
-      return res.status(200).json({ course, status: 'success' });
+      return res.status(200).json({ course, status: "success" });
     } catch (err) {
       next(err);
     }
@@ -32,10 +32,10 @@ const CourseController = {
     try {
       await CoursesService.deleteCourse(req.params.id);
       return res.status(200).json({
-        message: 'Course deleted successfully.',
-        status: 'success',
+        message: "Course deleted successfully.",
+        status: "success",
         statusCode: 200,
-    });
+      });
     } catch (err) {
       next(err);
     }
@@ -44,7 +44,7 @@ const CourseController = {
   async getCourseById(req, res, next) {
     try {
       const course = await CoursesService.getCourseById(req.params.id);
-      return res.status(200).json({ course, status: 'success' });
+      return res.status(200).json({ course, status: "success" });
     } catch (err) {
       next(err);
     }
@@ -53,11 +53,11 @@ const CourseController = {
   async getAllCourses(req, res, next) {
     try {
       const courses = await CoursesService.getAllCourses();
-      return res.status(200).json({ courses, status: 'success' });
+      return res.status(200).json({ courses, status: "success" });
     } catch (err) {
       next(err);
     }
-  }
+  },
 };
 
 module.exports = CourseController;

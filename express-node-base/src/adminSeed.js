@@ -1,32 +1,31 @@
 // src/adminSeed.js
-const AdminService = require('./services/AdminService'); 
-const sequelize = require('./configs/connections/postgresql'); 
+const AdminService = require("./services/AdminService");
+const sequelize = require("./configs/connections/postgresql");
 
-console.log('AdminService:', AdminService);
+console.log("AdminService:", AdminService);
 
 async function seedAdmin() {
-    try {
-        // Admin credentials
-        const adminData = {
-            email: 'admin@gmail.com',
-            password: 'admin123',
-            role: 'admin'
-        };
+  try {
+    // Admin credentials
+    const adminData = {
+      email: "admin@gmail.com",
+      password: "admin123",
+      role: "admin",
+    };
 
-        // Check if admin already exists using AdminService
-        const existingAdmin = await AdminService.getAdminByEmail(adminData.email);
+    // Check if admin already exists using AdminService
+    const existingAdmin = await AdminService.getAdminByEmail(adminData.email);
 
-        if (!existingAdmin) {
-            // Create admin if not exists using AdminService
-            await AdminService.createAdmin(adminData);
-            console.log('Admin account created successfully.');
-        } else {
-            console.log('Admin account already exists.');
-        }
-
-    } catch (error) {
-        console.error('Error seeding admin account:', error);
-    } 
+    if (!existingAdmin) {
+      // Create admin if not exists using AdminService
+      await AdminService.createAdmin(adminData);
+      console.log("Admin account created successfully.");
+    } else {
+      console.log("Admin account already exists.");
+    }
+  } catch (error) {
+    console.error("Error seeding admin account:", error);
+  }
 }
 
 seedAdmin();
