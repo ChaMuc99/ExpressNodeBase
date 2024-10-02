@@ -8,6 +8,8 @@ const cors = require("cors");
 const routes = require("./routers"); // Import routes
 const sequelize = require("./configs/connections/postgresql");
 
+const { consumeMessages } = require('./kafka/consumer');
+
 const app = express();
 
 setupAssociations();
@@ -22,6 +24,9 @@ sequelize
   .then(() => console.log("Database synchronized"))
   .catch((err) => console.error("Database synchronization failed:", err));
 
+
+  const topic = 'student-updates';  // Set the topic you want to consume
+  consumeMessages(topic).catch(console.error);  // Start the consumer
 // Use routes
 app.use("/api", routes);
 

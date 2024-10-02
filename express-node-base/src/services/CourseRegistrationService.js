@@ -3,6 +3,7 @@ const Course = require("../models/Course");
 const Student = require("../models/Student");
 const CourseRegistration = require("../models/CourseRegistration");
 const { v4: uuidv4 } = require("uuid");
+const { sendMessage } = require('../kafka/producer');
 
 const CourseRegistrationService = {
   async registerCourse(student_id, course_id) {
@@ -35,7 +36,7 @@ const CourseRegistrationService = {
         created_by: "system",
         updated_by: "system",
       });
-
+      await sendMessage('course-registration', { student_id, course_id, action: 'register' });
       return {
         success: true,
         data: registration,
@@ -62,7 +63,8 @@ const CourseRegistrationService = {
 
       // Delete the registration
       await registration.destroy();
-
+      //kafka noti
+     
       return {
         message: "Course registration canceled successfully",
         status: "success",

@@ -1,22 +1,27 @@
-const Kafka = require('kafka-node');
+const { Kafka } = require('kafkajs');
 const kafkaConfig = require('./config');
-const { partition } = require('lodash');
 
-const kafka = new Kafka(kafkaConfig);
-const consumer = kafka.consumer({ groupId: 'school-managment-group'});
+const kafka = new Kafka(kafkaConfig);  // Initialize Kafka instance with config
+const consumer = kafka.consumer({ groupId: 'school-management-group' });  // Set a consumer group ID
 
 async function consumeMessages(topic) {
-    await consumer.connect();
-    await consumer.subcribe({ topic, frombeginning: true});
+  try {
+    await consumer.connect();  // Connect to Kafka broker
+    await consumer.subscribe({ topic, fromBeginning: true });  // Subscribe to the specified topic
 
+    // Start consuming messages
     await consumer.run({
-        eachMessage: async ({ topic, partition, message}) => {
+      eachMessage: async ({ topic, partition, message }) => {
+        console.log(`Received message from ${topic}:`, message.value.toString());
 
-            console.log(`Received message from ${topic}:`, message.value.toString());
-        },
-
+        // Example: Handle the message, e.g., update student info, process registration
+        // You can add your logic here
+      },
     });
 
+  } catch (error) {
+    console.error(`Error in consuming messages: ${error.message}`);  // Handle connection or runtime errors
+  }
 }
 
-module.exports = consumeMessages
+module.exports = { consumeMessages };
